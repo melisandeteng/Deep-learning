@@ -87,7 +87,7 @@ def generate_dataset_classification(nb_samples, noise=0.0, free_location=False):
     Y = np.zeros(nb_samples)
     print('Creating data:')
     for i in range(nb_samples):
-        if i % 10 == 0:
+        if i % 100 == 0:
             print(i)
         category = np.random.randint(3)
         if category == 0:
@@ -113,7 +113,7 @@ def generate_dataset_regression(nb_samples, noise=0.0):
     Y = np.zeros([nb_samples, 6])
     print('Creating data:')
     for i in range(nb_samples):
-        if i % 10 == 0:
+        if i % 100 == 0:
             print(i)
         [X[i], Y[i]] = generate_a_triangle(noise, True)
     X = (X + noise) / (255 + 2 * noise)
@@ -137,7 +137,33 @@ def visualize_prediction(x, y):
 def generate_test_set_regression():
     np.random.seed(42)
     [X_test, Y_test] = generate_dataset_regression(300, 20)
-    Y_test = np_utils.to_categorical(Y_test, 3)
+    #Y_test = np_utils.to_categorical(Y_test, 3)
     return [X_test, Y_test]
 
+def generate_dataset_classification_noise(nb_samples, free_location=False):
+    # Getting im_size:
+    im_size = generate_a_rectangle().shape[0]
+    X = np.zeros([nb_samples,im_size])
+    Xnoise = np.zeros([nb_samples,im_size])
+    Y = np.zeros(nb_samples)
+    print('Creating data:')
+    for i in range(nb_samples):
+        if i % 100 == 0:
+            print(i)
+        category = 0 #np.random.randint(3)
+        if category == 0:
+            noise = np.random.randint(0,255)
+            X[i] = generate_a_rectangle(noise, free_location)
+            Xnoise[i] = (X[i] + noise) / (255 + 2 * noise)
+        elif category == 1: 
+            noise = np.random.randint(0,255)
+            X[i] = generate_a_disk(noise, free_location)
+            Xnoise[i] = (X[i] + noise) / (255 + 2 * noise)
+        else:
+            noise = np.random.randint(0,255)
+            [X[i], V] = generate_a_triangle(noise, free_location)
+            Xnoise[i] = (X[i] + noise) / (255 + 2 * noise)
+      
+    X = X/255
+    return [Xnoise, X]
 
